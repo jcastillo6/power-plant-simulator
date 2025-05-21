@@ -1,0 +1,86 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
+    id 'org.springframework.boot' version '3.4.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.openapi.generator' version '7.3.0'
+}
+
+group = 'com.jcastillo'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'org.springframework:spring-webflux'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.30'
+    implementation 'io.swagger.core.v3:swagger-models:2.2.30'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation("io.cucumber:cucumber-java:7.15.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.15.0")
+    testImplementation("io.cucumber:cucumber-spring:7.15.0")
+    testImplementation("org.junit.platform:junit-platform-suite:1.10.2")
+    testImplementation("io.rest-assured:rest-assured:5.4.0")
+    testImplementation("io.rest-assured:kotlin-extensions:5.4.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.mockk:mockk:1.13.10")
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll '-Xjsr305=strict'
+    }
+}
+
+openApiGenerate {
+    generatorName = "kotlin-spring"
+    inputSpec = file("src/main/resources/simulator-api.yaml").absolutePath
+    outputDir = "$projectDir"
+    apiPackage = "com.jcastillo.simulator.port"
+    modelPackage = "com.jcastillo.simulator.port.model"
+    configOptions = [
+            delegatePattern      : "true",
+            interfaceOnly        : "true",
+            useSpringBoot3       : "true",
+            useTags              : "true",
+            dateLibrary          : "java8",
+            useResponseEntity    : "true",
+            useSpringDoc         : "true",
+            annotationLibrary    : "swagger2",
+            documentationProvider: "springdoc",
+            useJakartaEe         : "true",
+            serializationLibrary : "jackson",
+            basePackage          : "com.jcastillo.simulator.doc"
+    ]
+}
+
+tasks.named('openApiGenerate') {
+    outputs.upToDateWhen { false }
+    doNotTrackState("This task generates code in the project directory")
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform {
+        excludeTags 'integration-test'
+    }
+    exclude '**/CucumberTest*'
+}

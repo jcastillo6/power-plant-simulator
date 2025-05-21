@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Console Appender -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%C{1}): %msg%n%throwable</pattern>
+        </encoder>
+    </appender>
+    <!-- Logger configurations -->
+    <logger name="com.jcastillo.simulator" level="DEBUG" additivity="false">
+        <appender-ref ref="Console" />
+    </logger>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="Console" />
+    </root>
+
+    <!-- Spring Framework logger -->
+    <logger name="org.springframework" level="INFO"/>
+
+    <!-- MongoDB logger -->
+    <logger name="org.mongodb" level="INFO"/>
+</configuration>
