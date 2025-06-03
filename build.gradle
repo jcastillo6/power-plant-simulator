@@ -86,6 +86,10 @@ sourceSets {
     }
 }
 
+tasks.named('compileKotlin') {
+    dependsOn tasks.named('openApiGenerate')
+}
+
 tasks.named('openApiGenerate') {
     outputs.upToDateWhen { false }
     doNotTrackState("This task generates code in the project directory")
