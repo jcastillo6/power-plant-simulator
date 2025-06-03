@@ -47,7 +47,15 @@ This will:
 - Application properties can be adjusted in `src/main/resources/application.properties`.
 - MongoDB connection details are set via environment variables and passed to the application at runtime.
 
+## k8s Deployment
+To deploy the application on Kubernetes, ensure you have a Kubernetes cluster running and `kubectl` configured.
+1. **Build the Docker image:**
+create a tag like this: v0.0.1
+
+2. Kubernetes manifests are located in the `k8s` directory. You can customize the deployment by editing the files in `k8s/overlays/development`.
+```bash
 kubectl apply -k k8s/overlays/development
+```
 
 ## License
 
