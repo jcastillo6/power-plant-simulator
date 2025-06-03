@@ -1,6 +1,5 @@
 package com.jcastillo.simulator.steps.bdd
 
-import com.jcastillo.simulator.port.model.PowerPlant
 import io.restassured.RestAssured
 import io.restassured.response.Response
 import org.springframework.http.MediaType

@@ -1,8 +1,6 @@
 package com.jcastillo.simulator.steps
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.jcastillo.simulator.port.model.PowerPlant
-import com.jcastillo.simulator.port.model.PowerPlantOutput
 import com.jcastillo.simulator.steps.bdd.NetworkRetriever
 import com.jcastillo.simulator.steps.bdd.PowerPlantLoader
 import com.jcastillo.simulator.steps.bdd.PowerPlantUploader
@@ -13,6 +11,8 @@ import io.cucumber.java.en.When
 import io.restassured.response.Response
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
+import org.openapitools.model.PowerPlant
+import org.openapitools.model.PowerPlantOutput
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import kotlin.test.assertNotNull

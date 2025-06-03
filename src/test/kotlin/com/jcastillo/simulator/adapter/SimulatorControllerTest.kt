@@ -13,6 +13,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.openapitools.model.PowerPlantOutput
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 
@@ -37,8 +38,8 @@ class SimulatorControllerTest {
     @Test
     fun `uploadPowerPlantFile When File Is Valid Should Return Ok`() {
         val daysForSimulation = 1
-        val powerPlantInput1 = com.jcastillo.simulator.port.model.PowerPlant("name1", 1)
-        val powerPlantInput2 = com.jcastillo.simulator.port.model.PowerPlant("name2", 2)
+        val powerPlantInput1 = org.openapitools.model.PowerPlant("name1", 1)
+        val powerPlantInput2 = org.openapitools.model.PowerPlant("name2", 2)
         val powerPlant1 = PowerPlant("name1", 1, BigDecimal.ONE)
         val powerPlant2 = PowerPlant("name2", 2, BigDecimal.ONE)
         val createPlantCommands = listOf(CreatePowerPlantCommand(powerPlantInput1.name, powerPlantInput1.age),
@@ -50,7 +51,7 @@ class SimulatorControllerTest {
         every {
             mapper.readValue(
                 any<java.io.InputStream>(),
-                Array<com.jcastillo.simulator.port.model.PowerPlant>::class.java
+                Array<org.openapitools.model.PowerPlant>::class.java
             )
         } returns arrayOf (powerPlantInput1, powerPlantInput2)
         every { fileValidator.validate(fileResource) } returns FileValidationResult.Valid
@@ -73,7 +74,7 @@ class SimulatorControllerTest {
         every {
             mapper.readValue(
                 any<java.io.InputStream>(),
-                Array<com.jcastillo.simulator.port.model.PowerPlant>::class.java
+                Array<org.openapitools.model.PowerPlant>::class.java
             )
         } returns arrayOf()
 
@@ -103,16 +104,16 @@ class SimulatorControllerTest {
         assertEquals( 2,body.size)
         assertTrue {
             body == listOf(
-                com.jcastillo.simulator.port.model.PowerPlantOutput("name1", 1, BigDecimal.ONE),
-                com.jcastillo.simulator.port.model.PowerPlantOutput("name2", 2, BigDecimal.ONE)
+                PowerPlantOutput("name1", 1, BigDecimal.ONE),
+                PowerPlantOutput("name2", 2, BigDecimal.ONE)
             )
         }
     }
 
     @Test
     fun `addPowerPlants When Plants List Is Valid Should Return Created`() {
-        val powerPlantInput1 = com.jcastillo.simulator.port.model.PowerPlant("name1", 1)
-        val powerPlantInput2 = com.jcastillo.simulator.port.model.PowerPlant("name2", 2)
+        val powerPlantInput1 = org.openapitools.model.PowerPlant("name1", 1)
+        val powerPlantInput2 = org.openapitools.model.PowerPlant("name2", 2)
         val createPlantCommands = listOf(
             CreatePowerPlantCommand(powerPlantInput1.name, powerPlantInput1.age),
             CreatePowerPlantCommand(powerPlantInput2.name, powerPlantInput2.age)

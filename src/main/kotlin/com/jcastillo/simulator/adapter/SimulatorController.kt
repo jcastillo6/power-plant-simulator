@@ -72,7 +72,7 @@ class SimulatorController(
      * TODO validate negative ages
      */
     private fun processFileAndGetResponse(days: Int, file: Resource): ResponseEntity<NetworkUploadResponse> {
-        val powerPlantsInput = mapper.readValue(file.inputStream, Array<PowerPlant>::class.java)
+        val powerPlantsInput = mapper.readValue(file.inputStream, Array<org.openapitools.model.PowerPlant>::class.java)
         if (powerPlantsInput.isEmpty()) {
             throw EmptyFileException(FILE_IS_EMPTY)
         }
