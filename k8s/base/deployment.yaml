@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: power-plant-simulator
-          image: simulator:0.0.1
+          image: jcastillo88/power-plant-simulator
           ports:
             - containerPort: 8080
           env:
