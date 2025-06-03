@@ -12,4 +12,4 @@ pluginManagement {
         }
     }
 }
-rootProject.name = "openapi-spring"
+rootProject.name = "power-plant-simulator"
