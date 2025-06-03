@@ -47,6 +47,8 @@ This will:
 - Application properties can be adjusted in `src/main/resources/application.properties`.
 - MongoDB connection details are set via environment variables and passed to the application at runtime.
 
+kubectl apply -k k8s/overlays/development
+
 ## License
 
 MIT License
