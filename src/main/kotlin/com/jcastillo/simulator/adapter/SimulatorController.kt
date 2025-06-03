@@ -2,13 +2,14 @@ package com.jcastillo.simulator.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jcastillo.simulator.domain.CreatePowerPlantCommand
+import com.jcastillo.simulator.domain.PowerPlant
 import com.jcastillo.simulator.domain.SimulationAggregate
-import com.jcastillo.simulator.port.model.NetworkUploadResponse
-import com.jcastillo.simulator.port.model.PowerPlant
-import com.jcastillo.simulator.port.model.PowerPlantOutput
-import com.jcastillo.simulator.port.model.TotalOutputResponse
 import com.jcastillo.simulator.service.FileValidationResult
 import com.jcastillo.simulator.service.FileValidator
+import org.openapitools.api.SimulatorApi
+import org.openapitools.model.NetworkUploadResponse
+import org.openapitools.model.PowerPlantOutput
+import org.openapitools.model.TotalOutputResponse
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -24,9 +25,9 @@ class SimulatorController(
     private val simulatorAggregate: SimulationAggregate,
     private val fileValidator: FileValidator,
     val mapper: ObjectMapper
-) : com.jcastillo.simulator.port.SimulatorApi {
+) : SimulatorApi {
 
-    override fun uploadPowerPlantFile(days: Int, file: Resource): ResponseEntity<NetworkUploadResponse> {
+     override fun uploadPowerPlantFile(days: Int, file: Resource): ResponseEntity<NetworkUploadResponse> {
         if (days < 0) {
             throw NegativeNumberOfDaysException(INVALID_DAY)
         }
@@ -37,7 +38,7 @@ class SimulatorController(
         }
     }
 
-    override fun loadPowerPlants(powerPlants: List<PowerPlant>): ResponseEntity<Unit> {
+    override fun loadPowerPlants(powerPlants: List<org.openapitools.model.PowerPlant>): ResponseEntity<Unit> {
         if (powerPlants.isEmpty()) {
             throw EmptyBodyException(NO_POWER_PLANTS_TO_LOAD)
         }
@@ -77,7 +78,7 @@ class SimulatorController(
         }
         val simulation = powerPlantsInput.map { CreatePowerPlantCommand(it.name, it.age) }
             .let { simulatorAggregate.addAndExecuteSimulation(it, days) }
-        val powerPlantsOutput = simulation.powerPlants.map { (name, age) -> PowerPlant(name, age) }
+        val powerPlantsOutput = simulation.powerPlants.map { (name, age) -> org.openapitools.model.PowerPlant(name, age) }
         val networkUploadResponse = NetworkUploadResponse(producedKwh = simulation.kwhOutput, powerPlantsOutput)
         return ResponseEntity.status(HttpStatus.CREATED).body(networkUploadResponse)
     }

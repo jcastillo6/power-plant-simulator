@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: power-plant-simulator
+  labels:
+    environment: development
+spec:
+  replicas: 2  # Increase the number of replicas in development.
+  template:
+    spec:
+      containers:
+        - name: power-plant-simulator
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: development

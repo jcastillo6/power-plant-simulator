@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: power-plant-simulator
+spec:
+  selector:
+    app: power-plant-simulator
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

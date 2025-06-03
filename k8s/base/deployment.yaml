@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: power-plant-simulator
+  labels:
+    app: power-plant-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: power-plant-simulator
+  template:
+    metadata:
+      labels:
+        app: power-plant-simulator
+    spec:
+      containers:
+        - name: power-plant-simulator
+          image: simulator:0.0.1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: development
+            - name: MONGODB_HOST
+              value: mongo
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-user
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-password

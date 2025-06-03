@@ -45,3 +45,5 @@ target/
 ### OpenAPI Generator ###
 .openapi-generator/
 .openapi-generator-ignore
+
+*.env

@@ -12,6 +12,7 @@ COPY . .
 RUN gradle clean build -x test --no-daemon
 
 FROM eclipse-temurin:21-jre-alpine
+USER root
 WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar

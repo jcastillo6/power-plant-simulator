@@ -2,7 +2,7 @@ package com.jcastillo.simulator.adapter
 
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
-import com.jcastillo.simulator.port.model.Error
+import org.openapitools.model.Error
 import jakarta.validation.ConstraintViolationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

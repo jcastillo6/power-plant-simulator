@@ -1,0 +1,11 @@
+secretGenerator:
+  - name: mongo-secret
+    envs:
+      - .env.secret
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - mongo-deployment.yaml
+  - mongo-service.yaml
+  - mongo-pvc.yaml

@@ -1,0 +1,5 @@
+namespace: simulator-dev
+resources:
+  - ../../base
+patches:
+  - path: ./patches/deployment_patch.yaml
