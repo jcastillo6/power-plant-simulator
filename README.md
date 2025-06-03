@@ -56,6 +56,9 @@ create a tag like this: v0.0.1
 ```bash
 kubectl apply -k k8s/overlays/development
 ```
+3. **Access the application:**
+   - If you are using a local Kubernetes cluster (like Minikube), you can access the application via the Minikube IP or port-forwarding.
+   - For cloud providers, ensure you have set up the necessary ingress or load balancer.
 
 ## License
 
