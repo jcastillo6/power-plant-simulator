@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: power-plant-simulator
+  namespace: argocd
+spec:
+  destination:
+    namespace: gitops-kubernetes
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://github.com/jcastillo6/power-plant-simulator
+    path: k8s/overlays/development
+    targetRevision: main
