@@ -15,7 +15,9 @@ import org.openapitools.model.PowerPlant
 import org.openapitools.model.PowerPlantOutput
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
+import org.testcontainers.junit.jupiter.Testcontainers
 import kotlin.test.assertNotNull
+
 
 private const val HOST = "http://localhost:"
 private const val BASE_URL = "/solar-simulator/"
@@ -24,7 +26,9 @@ private const val LOAD = "load"
 private const val NETWORK = "network"
 private const val OUTPUT = "output"
 
+@Testcontainers
 class SimulatorSteps(@LocalServerPort val localPort: Int) {
+
     private val powerPlantUploader = PowerPlantUploader()
     private val powerPlantLoader = PowerPlantLoader()
     private val networkRetriever = NetworkRetriever()
