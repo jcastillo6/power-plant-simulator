@@ -31,6 +31,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-docker-compose")
+    implementation 'org.apache.curator:curator-recipes:5.8.0'
+    implementation 'org.apache.curator:curator-framework:5.8.0'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

@@ -18,11 +18,12 @@ class SimulationAggregateTest {
     private val powerPlantPersistenceService = mockk<com.jcastillo.simulator.service.PowerPlantPersistenceService>()
     private val totalNetworkPowerPersistenceService = mockk<com.jcastillo.simulator.service.TotalNetworkPowerPersistenceService>()
     private val calculatorService: CalculatorService = mockk()
+    private val curatorFramework: org.apache.curator.framework.CuratorFramework = mockk()
     private lateinit var simulationAggregate: SimulationAggregate
 
     @BeforeEach
     fun setUp() {
-        simulationAggregate = SimulationAggregate(powerPlantPersistenceService, totalNetworkPowerPersistenceService, calculatorService)
+        simulationAggregate = SimulationAggregate(powerPlantPersistenceService, totalNetworkPowerPersistenceService, calculatorService, curatorFramework)
     }
 
     @Test

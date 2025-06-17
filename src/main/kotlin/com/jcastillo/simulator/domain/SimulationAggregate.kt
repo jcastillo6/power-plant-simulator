@@ -2,10 +2,13 @@ package com.jcastillo.simulator.domain
 
 import com.jcastillo.simulator.service.PowerPlantPersistenceService
 import com.jcastillo.simulator.service.TotalNetworkPowerPersistenceService
+import org.apache.curator.framework.recipes.locks.InterProcessMutex
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
+
+private const val SIMULATION_LOCK = "/simulation-lock"
 
 /**
  * This class is the simulation aggregate root. It's in charge of executing the simulation and
@@ -21,9 +24,10 @@ class SimulationAggregate(
     private val powerPlantPersistenceService: PowerPlantPersistenceService,
     private val totalNetworkPowerPersistenceService: TotalNetworkPowerPersistenceService,
     private val calculatorService: CalculatorService,
+    private val curatorFramework: org.apache.curator.framework.CuratorFramework
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
-
+    private val lock = InterProcessMutex(curatorFramework, SIMULATION_LOCK)
 
     // TODO Change to queue to avoid blocking the service, or use reactive programming.
     @Transactional
@@ -50,22 +54,33 @@ class SimulationAggregate(
     //TODO the statistics need to be move to redis or other cache for faster access
     @Synchronized
     private fun publishPersistenceEvent(powerPlants: List<PowerPlant>) {
-        powerPlantPersistenceService.upsertAll(powerPlants)
-        powerPlantPersistenceService.getPowerPlantsStats()?.let { stats ->
-            totalNetworkPowerPersistenceService.upsertNetworkPower(stats)
-            log.info("Added ${powerPlants.size} power plants and updated network stats")
-            log.debug("Network stats: {}", stats)
-        } ?: {
-            log.error("Error getting power plants stats")
+        lock.acquire()
+        try {
+            powerPlantPersistenceService.upsertAll(powerPlants)
+            powerPlantPersistenceService.getPowerPlantsStats()?.let { stats ->
+                totalNetworkPowerPersistenceService.upsertNetworkPower(stats)
+                log.info("Added ${powerPlants.size} power plants and updated network stats")
+                log.debug("Network stats: {}", stats)
+            } ?: {
+                log.error("Error getting power plants stats")
+            }
+        }   finally {
+            lock.release()
         }
     }
 
     //TODO locking mechanism need to be improved dirty reads can happen
-    @Synchronized
     @Transactional
     fun addAndExecuteSimulation(powerPlantCommands: List<CreatePowerPlantCommand>, days: Int): Simulation {
-        addAllPowerPlants(powerPlantCommands)
-        return executeSimulation(days)
+        lock.acquire()
+        val simulation: Simulation
+        try {
+            addAllPowerPlants(powerPlantCommands)
+            simulation = executeSimulation(days)
+        } finally {
+            lock.release()
+        }
+        return simulation
     }
 
     /**
