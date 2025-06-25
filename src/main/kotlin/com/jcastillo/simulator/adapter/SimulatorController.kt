@@ -2,7 +2,6 @@ package com.jcastillo.simulator.adapter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jcastillo.simulator.domain.CreatePowerPlantCommand
-import com.jcastillo.simulator.domain.PowerPlant
 import com.jcastillo.simulator.domain.SimulationAggregate
 import com.jcastillo.simulator.service.FileValidationResult
 import com.jcastillo.simulator.service.FileValidator
@@ -10,6 +9,8 @@ import org.openapitools.api.SimulatorApi
 import org.openapitools.model.NetworkUploadResponse
 import org.openapitools.model.PowerPlantOutput
 import org.openapitools.model.TotalOutputResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,12 +21,16 @@ private const val FILE_IS_EMPTY = "File is empty"
 private const val INVALID_DAY = "Invalid number of days. Must be at least 1 and less than 9125"
 private const val NO_POWER_PLANTS_TO_LOAD = "No power plants to load"
 
+
 @RestController
 class SimulatorController(
     private val simulatorAggregate: SimulationAggregate,
     private val fileValidator: FileValidator,
     val mapper: ObjectMapper
 ) : SimulatorApi {
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(SimulatorApi::class.java)
+    }
 
      override fun uploadPowerPlantFile(days: Int, file: Resource): ResponseEntity<NetworkUploadResponse> {
         if (days < 0) {
@@ -39,6 +44,7 @@ class SimulatorController(
     }
 
     override fun loadPowerPlants(powerPlants: List<org.openapitools.model.PowerPlant>): ResponseEntity<Unit> {
+        logger.info("Loading power plants: ${powerPlants.size}")
         if (powerPlants.isEmpty()) {
             throw EmptyBodyException(NO_POWER_PLANTS_TO_LOAD)
         }
@@ -52,6 +58,7 @@ class SimulatorController(
         ifNoneMatch: String?,
         ifModifiedSince: OffsetDateTime?
     ): ResponseEntity<List<PowerPlantOutput>> {
+        logger.info("Getting network status for days: $days")
         val simulation = simulatorAggregate.executeSimulation(days)
         val powerPlantsOutput =
             simulation.powerPlants.map { (name, age, output) -> PowerPlantOutput(name, age, output) }
@@ -64,6 +71,7 @@ class SimulatorController(
         ifNoneMatch: String?,
         ifModifiedSince: OffsetDateTime?
     ): ResponseEntity<TotalOutputResponse> {
+        logger.info("Getting total output for days: $days")
         val simulation = simulatorAggregate.executeSimulation(days)
         return ResponseEntity.status(HttpStatus.OK).body(TotalOutputResponse(simulation.kwhOutput))
     }
@@ -72,6 +80,7 @@ class SimulatorController(
      * TODO validate negative ages
      */
     private fun processFileAndGetResponse(days: Int, file: Resource): ResponseEntity<NetworkUploadResponse> {
+        logger.info("Processing file: ${file.filename} with days: $days")
         val powerPlantsInput = mapper.readValue(file.inputStream, Array<org.openapitools.model.PowerPlant>::class.java)
         if (powerPlantsInput.isEmpty()) {
             throw EmptyFileException(FILE_IS_EMPTY)

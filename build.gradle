@@ -41,7 +41,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:mongodb'
     testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testImplementation("io.cucumber:cucumber-java:7.15.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.15.0")

@@ -6,6 +6,12 @@
             <pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%C{1}): %msg%n%throwable</pattern>
         </encoder>
     </appender>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/app.log</file>
+        <encoder>
+            <pattern>%d{ISO8601} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
     <!-- Logger configurations -->
     <logger name="com.jcastillo.simulator" level="DEBUG" additivity="false">
         <appender-ref ref="Console" />
@@ -14,6 +20,7 @@
     <!-- Root logger -->
     <root level="INFO">
         <appender-ref ref="Console" />
+        <appender-ref ref="FILE" />
     </root>
 
     <!-- Spring Framework logger -->
